@@ -15,6 +15,11 @@ export const changeRecommendList = data => ({
   data: fromJS(data)
 });
 
+export const ChangeEnterLoading = data => ({
+  type: actionTypes.CHANGE_ENTER_LOADING,
+  data
+});
+
 export const getBannerList = () => {
   return dispatch => {
     getBannerRequest()
@@ -32,6 +37,7 @@ export const getRecomendList = () => {
     getRecommendListRequest()
       .then(data => {
         dispatch(changeRecommendList(data.result));
+        dispatch(ChangeEnterLoading(false));
       })
       .catch(() => {
         console.log("recommend data error");

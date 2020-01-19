@@ -6,9 +6,10 @@ import { Content } from "./style";
 import { connect } from "react-redux";
 import * as actionTypes from "./store/actionCreators";
 import { forceCheck } from "react-lazyload";
+import Loading from "../../baseUI/loading";
 
 function Recommend(props) {
-  const { bannerList, recommendList } = props;
+  const { bannerList, recommendList, enterLoading } = props;
   const { getBannerDataDispatch, getRecommendListDataDipatch } = props;
 
   useEffect(() => {
@@ -20,19 +21,22 @@ function Recommend(props) {
   const recommendListJS = recommendList ? recommendList.toJS() : [];
   return (
     <Content>
+      {enterLoading ? <Loading></Loading> : null}
       <Scroll className="list" onScroll={forceCheck}>
         <div>
           <Slider bannerList={bannerListJS}></Slider>
           <RecommendList recommendList={recommendListJS}></RecommendList>
         </div>
       </Scroll>
+      f
     </Content>
   );
 }
 
 const mapStateToProps = state => ({
   bannerList: state.getIn(["recommend", "bannerList"]),
-  recommendList: state.getIn(["recommend", "recommendList"])
+  recommendList: state.getIn(["recommend", "recommendList"]),
+  enterLoading: state.getIn(["recommend", "enterLoading"])
 });
 
 const mapDispatchToProps = dispatch => {
