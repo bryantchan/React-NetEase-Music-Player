@@ -13,8 +13,12 @@ function Recommend(props) {
   const { getBannerDataDispatch, getRecommendListDataDipatch } = props;
 
   useEffect(() => {
-    getBannerDataDispatch();
-    getRecommendListDataDipatch();
+    if (!bannerList.size) {
+      getBannerDataDispatch();
+    }
+    if (!recommendList.size) {
+      getRecommendListDataDipatch();
+    }
   }, []);
 
   const bannerListJS = bannerList ? bannerList.toJS() : [];
