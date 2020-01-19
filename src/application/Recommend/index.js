@@ -5,7 +5,7 @@ import Scroll from "../../components/scroll";
 import { Content } from "./style";
 import { connect } from "react-redux";
 import * as actionTypes from "./store/actionCreators";
-import { getRecommendListRequest } from "../../api/request";
+import { forceCheck } from "react-lazyload";
 
 function Recommend(props) {
   const { bannerList, recommendList } = props;
@@ -20,7 +20,7 @@ function Recommend(props) {
   const recommendListJS = recommendList ? recommendList.toJS() : [];
   return (
     <Content>
-      <Scroll className="list">
+      <Scroll className="list" onScroll={forceCheck}>
         <div>
           <Slider bannerList={bannerListJS}></Slider>
           <RecommendList recommendList={recommendListJS}></RecommendList>
