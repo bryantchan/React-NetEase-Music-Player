@@ -47,6 +47,24 @@ export const getHotSingerList = () => {
   };
 };
 
+export const refreshMoreHotSingerList = () => {
+  return (dispatch, getState) => {
+    const pageCount = getState().getIn(["singers", "pageCount"]);
+    const singerList = getState()
+      .getIn(["singers", "singerList"])
+      .toJS();
+    getHotSingerListRequest(pageCount)
+      .then(res => {
+        const data = [...singerList, ...res.artists];
+        dispatch(changeSingerList(data));
+        dispatch(changePullUpLoading(false));
+      })
+      .catch(() => {
+        console.log("get hot singers data failed");
+      });
+  };
+};
+
 export const getSingerList = (category, alpha) => {
   return (dispatch, getState) => [
     getSingerListRequest(category, alpha, 0)

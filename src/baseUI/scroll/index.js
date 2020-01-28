@@ -8,11 +8,34 @@ import React, {
 import PropTypes from "prop-types";
 import BScroll from "better-scroll";
 import styled from "styled-components";
+import Loading from "../loading";
+import LoadingV2 from "../loading-v2";
 
 const ScrollContainer = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
+`;
+
+const PullUpLoading = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  width: 60px;
+  height: 60px;
+  margin: auto;
+  z-index: 100;
+`;
+
+export const PullDownLoading = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0px;
+  height: 30px;
+  margin: auto;
+  z-index: 100;
 `;
 
 const Scroll = forwardRef((props, ref) => {
@@ -102,8 +125,22 @@ const Scroll = forwardRef((props, ref) => {
     }
   }));
 
+  const PullUpdisplayStyle = pullUpLoading
+    ? { display: "" }
+    : { display: "none" };
+  const PullDowndisplayStyle = pullDownLoading
+    ? { display: "" }
+    : { display: "none" };
   return (
-    <ScrollContainer ref={scrollContainerRef}>{props.children}</ScrollContainer>
+    <ScrollContainer ref={scrollContainerRef}>
+      {props.children}
+      <PullUpLoading style={PullUpdisplayStyle}>
+        <Loading></Loading>
+      </PullUpLoading>
+      <PullDownLoading style={PullDowndisplayStyle}>
+        <LoadingV2></LoadingV2>
+      </PullDownLoading>
+    </ScrollContainer>
   );
 });
 

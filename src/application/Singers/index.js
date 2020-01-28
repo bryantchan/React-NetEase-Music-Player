@@ -6,6 +6,7 @@ import Scroll from "../../baseUI/scroll";
 import * as actionCreators from "./store/actionCreators";
 import { connect } from "react-redux";
 import { toJS } from "immutable";
+import Loading from "../../baseUI/loading";
 
 function Singers(props) {
   let [category, setCategory] = useState("");
@@ -40,13 +41,20 @@ function Singers(props) {
     getHotSingerDispatch();
   }, []);
 
+  const handlePullUp = () => {
+    pullUprefreshDispatch(category, alpha, category === "", pageCount);
+  };
+
+  const handlePullDown = () => {
+    pullDownRefreshDispatch(category, alpha);
+  };
+
   const singerListJS = singerList ? singerList.toJS() : [];
 
   const renderSingerList = () => {
     return (
       <List>
         {singerListJS.map((item, index) => {
-          console.log(item);
           return (
             <ListItem key={item.accountId + "" + index}>
               <div className="img_wrapper">
@@ -82,7 +90,15 @@ function Singers(props) {
         ></Horizen>
       </NavContainer>
       <ListContainer>
-        <Scroll>{renderSingerList()}</Scroll>
+        {enterLoading ? <Loading></Loading> : null}
+        <Scroll
+          pullUp={handlePullUp}
+          pullDown={handlePullDown}
+          pullUpLoading={pullUpLoading}
+          pullDownLoading={pullDownLoading}
+        >
+          {renderSingerList()}
+        </Scroll>
       </ListContainer>
     </div>
   );
@@ -110,7 +126,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(actionCreators.changePullUpLoading(true));
       dispatch(actionCreators.changePageCount(count + 1));
       if (hot) {
-        dispatch(actionCreators.refreshMoreSingerList());
+        dispatch(actionCreators.refreshMoreHotSingerList());
       } else {
         dispatch(actionCreators.refreshMoreSingerList(category, alpha));
       }
