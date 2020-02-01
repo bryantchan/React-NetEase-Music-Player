@@ -38,7 +38,9 @@ function Singers(props) {
   } = props;
 
   useEffect(() => {
-    getHotSingerDispatch();
+    if (!singerList.size) {
+      getHotSingerDispatch();
+    }
   }, []);
 
   const handlePullUp = () => {
