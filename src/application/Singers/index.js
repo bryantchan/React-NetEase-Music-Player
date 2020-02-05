@@ -7,6 +7,7 @@ import * as actionCreators from "./store/actionCreators";
 import { connect } from "react-redux";
 import { toJS } from "immutable";
 import Loading from "../../baseUI/loading";
+import { renderRoutes } from "react-router-config";
 
 function Singers(props) {
   let [category, setCategory] = useState("");
@@ -50,6 +51,9 @@ function Singers(props) {
   const handlePullDown = () => {
     pullDownRefreshDispatch(category, alpha);
   };
+  const enterDetail = id => {
+    props.history.push(`/singers/${id}`);
+  };
 
   const singerListJS = singerList ? singerList.toJS() : [];
 
@@ -58,7 +62,10 @@ function Singers(props) {
       <List>
         {singerListJS.map((item, index) => {
           return (
-            <ListItem key={item.accountId + "" + index}>
+            <ListItem
+              onClick={() => enterDetail(item.id)}
+              key={item.accountId + "" + index}
+            >
               <div className="img_wrapper">
                 <img
                   src={`${item.picUrl}?param=300x300`}
@@ -102,6 +109,7 @@ function Singers(props) {
           {renderSingerList()}
         </Scroll>
       </ListContainer>
+      {renderRoutes(props.route.routes)}
     </div>
   );
 }
