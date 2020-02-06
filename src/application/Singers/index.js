@@ -99,7 +99,6 @@ function Singers(props) {
         ></Horizen>
       </NavContainer>
       <ListContainer>
-        {enterLoading ? <Loading></Loading> : null}
         <Scroll
           pullUp={handlePullUp}
           pullDown={handlePullDown}
@@ -109,6 +108,7 @@ function Singers(props) {
           {renderSingerList()}
         </Scroll>
       </ListContainer>
+      {enterLoading ? <Loading></Loading> : null}
       {renderRoutes(props.route.routes)}
     </div>
   );
