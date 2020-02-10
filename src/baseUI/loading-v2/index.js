@@ -4,11 +4,11 @@ import style from "../../assets/global-style";
 
 const dance = keyframes`
     0%, 40%, 100%{
-      transform: scaleY (0.4);
+      transform: scaleY(0.4);
       transform-origin: center 100%;
     }
     20%{
-      transform: scaleY (1);
+      transform: scaleY(1);
     }
 `;
 const Loading = styled.div`
@@ -25,16 +25,16 @@ const Loading = styled.div`
     margin-right: 2px;
     animation: ${dance} 1s infinite;
   }
-  > div:nth-child (2) {
+  > div:nth-child(2) {
     animation-delay: -0.4s;
   }
-  > div:nth-child (3) {
+  > div:nth-child(3) {
     animation-delay: -0.6s;
   }
-  > div:nth-child (4) {
+  > div:nth-child(4) {
     animation-delay: -0.5s;
   }
-  > div:nth-child (5) {
+  > div:nth-child(5) {
     animation-delay: -0.2s;
   }
 `;
@@ -47,7 +47,7 @@ function LoadingV2() {
       <div></div>
       <div></div>
       <div></div>
-      <span> 拼命加载中...</span>
+      <span>Loading...</span>
     </Loading>
   );
 }

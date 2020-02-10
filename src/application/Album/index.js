@@ -1,43 +1,50 @@
-//src/application/Album/index.js
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { connect } from "react-redux";
-import { Container, TopDesc, Menu, SongItem } from "./style";
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import { Container, TopDesc, Menu } from "./style";
 import { CSSTransition } from "react-transition-group";
-import Header from "../../baseUI/header";
-import Scroll from "../../baseUI/scroll";
-import SongList from "../../components/songList";
-import { getCount, getName, isEmptyObject } from "../../api/utils";
+import Header from "./../../baseUI/header/index";
+import Scroll from "../../baseUI/scroll/index";
+import { getCount, isEmptyObject } from "../../api/utils";
+import { HEADER_HEIGHT } from "./../../api/config";
 import style from "../../assets/global-style";
-import Loading from "../../baseUI/loading";
-import * as actions from "./store/actionCreators";
+import { connect } from "react-redux";
+import { getAlbumList, changeEnterLoading } from "./store/actionCreators";
+import Loading from "../../baseUI/loading/index";
+import SongsList from "../SongsList";
+import MusicNote from "../../baseUI/music-note/index";
 
 function Album(props) {
   const [showStatus, setShowStatus] = useState(true);
-  const [title, setTitle] = useState("playlist");
-  const [isMarquee, setIsMarquee] = useState(false);
+  const [title, setTitle] = useState("Playlist");
+  const [isMarquee, setIsMarquee] = useState(false); //是否跑马灯
 
-  // 从路由中拿到歌单的 id
-  const id = props.match.params.id;
+  const headerEl = useRef();
+  const musicNoteRef = useRef();
 
-  const { currentAlbum: currentAlbumImmutable, enterLoading } = props;
+  const {
+    currentAlbum: currentAlbumImmutable,
+    enterLoading,
+    songsCount
+  } = props;
   const { getAlbumDataDispatch } = props;
+
+  const id = props.match.params.id;
 
   useEffect(() => {
     getAlbumDataDispatch(id);
   }, [getAlbumDataDispatch, id]);
 
-  // 同时将 mock 数据的代码删除
   let currentAlbum = currentAlbumImmutable.toJS();
 
-  const headerEl = useRef();
-  const HEADER_HEIGHT = 45;
+  const handleBack = useCallback(() => {
+    setShowStatus(false);
+  }, []);
 
   const handleScroll = useCallback(
     pos => {
       let minScrollY = -HEADER_HEIGHT;
       let percent = Math.abs(pos.y / minScrollY);
       let headerDom = headerEl.current;
-      // 滑过顶部的高度开始变化
+      //滑过顶部的高度开始变化
       if (pos.y < minScrollY) {
         headerDom.style.backgroundColor = style["theme-color"];
         headerDom.style.opacity = Math.min(1, (percent - 1) / 2);
@@ -46,16 +53,16 @@ function Album(props) {
       } else {
         headerDom.style.backgroundColor = "";
         headerDom.style.opacity = 1;
-        setTitle("playlist");
+        setTitle("Playlist");
         setIsMarquee(false);
       }
     },
     [currentAlbum]
   );
 
-  const handleBack = useCallback(() => {
-    setShowStatus(false);
-  }, []);
+  const musicAnimation = (x, y) => {
+    musicNoteRef.current.startAnimation({ x, y });
+  };
 
   const renderTopDesc = () => {
     return (
@@ -91,19 +98,19 @@ function Album(props) {
       <Menu>
         <div>
           <i className="iconfont">&#xe6ad;</i>
-          评论
+          Comments
         </div>
         <div>
           <i className="iconfont">&#xe86f;</i>
-          点赞
+          Likes
         </div>
         <div>
           <i className="iconfont">&#xe62d;</i>
-          收藏
+          Collects
         </div>
         <div>
           <i className="iconfont">&#xe606;</i>
-          更多
+          More
         </div>
       </Menu>
     );
@@ -118,7 +125,7 @@ function Album(props) {
       unmountOnExit
       onExited={props.history.goBack}
     >
-      <Container>
+      <Container play={songsCount}>
         <Header
           ref={headerEl}
           title={title}
@@ -130,33 +137,38 @@ function Album(props) {
             <div>
               {renderTopDesc()}
               {renderMenu()}
-              <SongList
+              <SongsList
+                songs={currentAlbum.tracks}
                 collectCount={currentAlbum.subscribedCount}
                 showCollect={true}
-                songs={currentAlbum.tracks}
-              ></SongList>
+                showBackground={true}
+                musicAnimation={musicAnimation}
+              ></SongsList>
             </div>
           </Scroll>
         ) : null}
         {enterLoading ? <Loading></Loading> : null}
+        <MusicNote ref={musicNoteRef}></MusicNote>
       </Container>
     </CSSTransition>
   );
 }
 
+// 映射Redux全局的state到组件的props上
 const mapStateToProps = state => ({
   currentAlbum: state.getIn(["album", "currentAlbum"]),
-  enterLoading: state.getIn(["album", "enterLoading"])
+  enterLoading: state.getIn(["album", "enterLoading"]),
+  songsCount: state.getIn(["player", "playList"]).size
 });
-// 映射 dispatch 到 props 上
+// 映射dispatch到props上
 const mapDispatchToProps = dispatch => {
   return {
     getAlbumDataDispatch(id) {
-      dispatch(actions.changeEnterLoading(true));
-      dispatch(actions.getAlbumList(id));
+      dispatch(changeEnterLoading(true));
+      dispatch(getAlbumList(id));
     }
   };
 };
 
-// 将 ui 组件包装成容器组件
+// 将ui组件包装成容器组件
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Album));

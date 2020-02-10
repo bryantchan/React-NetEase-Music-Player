@@ -1,32 +1,34 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { getRankList } from "./store";
+import { getRankList } from "./store/index";
+import Loading from "../../baseUI/loading";
+import { List, ListItem, SongList, Container } from "./style";
+import Scroll from "../../baseUI/scroll/index";
+import { EnterLoading } from "./../Singers/style";
 import { filterIndex } from "../../api/utils";
 import { renderRoutes } from "react-router-config";
-import Loading from "../../baseUI/loading";
-import Scroll from "../../baseUI/scroll";
-import { Container, SongList, List, ListItem } from "./style";
-import { EnterLoading } from "../Singers/style";
 
 function Rank(props) {
-  const { rankList: list, loading } = props;
+  const { rankList: list, loading, songsCount } = props;
+
   const { getRankListDataDispatch } = props;
 
   let rankList = list ? list.toJS() : [];
-  let globalStartIndex = filterIndex(rankList);
-  let officialList = rankList.slice(0, globalStartIndex);
-  let globalList = rankList.slice(globalStartIndex);
 
   useEffect(() => {
     if (!rankList.length) {
       getRankListDataDispatch();
     }
+    // eslint-disable-next-line
   }, []);
+
+  let globalStartIndex = filterIndex(rankList);
+  let officialList = rankList.slice(0, globalStartIndex);
+  let globalList = rankList.slice(globalStartIndex);
 
   const enterDetail = detail => {
     props.history.push(`/rank/${detail.id}`);
   };
-
   const renderSongList = list => {
     return list.length ? (
       <SongList>
@@ -40,11 +42,10 @@ function Rank(props) {
       </SongList>
     ) : null;
   };
-
   const renderRankList = (list, global) => {
     return (
       <List globalRank={global}>
-        {list.map((item, index) => {
+        {list.map(item => {
           return (
             <ListItem
               key={item.id}
@@ -65,17 +66,16 @@ function Rank(props) {
   };
 
   let displayStyle = loading ? { display: "none" } : { display: "" };
-
   return (
-    <Container>
+    <Container play={songsCount}>
       <Scroll>
         <div>
           <h1 className="offical" style={displayStyle}>
-            官方榜
+            OFFICIAL
           </h1>
           {renderRankList(officialList)}
           <h1 className="global" style={displayStyle}>
-            全球榜
+            GLOBAL
           </h1>
           {renderRankList(globalList, true)}
           {loading ? (
@@ -90,11 +90,13 @@ function Rank(props) {
   );
 }
 
+// 映射Redux全局的state到组件的props上
 const mapStateToProps = state => ({
   rankList: state.getIn(["rank", "rankList"]),
-  loading: state.getIn(["rank", "loading"])
+  loading: state.getIn(["rank", "loading"]),
+  songsCount: state.getIn(["player", "playList"]).size
 });
-
+// 映射dispatch到props上
 const mapDispatchToProps = dispatch => {
   return {
     getRankListDataDispatch() {

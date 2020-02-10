@@ -1,23 +1,21 @@
 import React from "react";
 import { ListWrapper, ListItem, List } from "./style";
-import { getCount } from "../../api/utils";
 import LazyLoad from "react-lazyload";
+import { getCount } from "../../api/utils";
 import { withRouter } from "react-router-dom";
 
 function RecommendList(props) {
   const enterDetail = id => {
     props.history.push(`/recommend/${id}`);
   };
+
   return (
     <ListWrapper>
-      <h1 className="title">Playlist</h1>
+      <h1 className="title">RECOMMEND</h1>
       <List>
-        {props.recommendList.map((item, index) => {
+        {props.recommendList.map(item => {
           return (
-            <ListItem
-              key={item.id + index}
-              onClick={() => enterDetail(item.id)}
-            >
+            <ListItem key={item.id} onClick={() => enterDetail(item.id)}>
               <div className="img_wrapper">
                 <div className="decorate"></div>
                 <LazyLoad
@@ -26,7 +24,7 @@ function RecommendList(props) {
                       width="100%"
                       height="100%"
                       src={require("./music.png")}
-                      alt="music place holder"
+                      alt="music"
                     />
                   }
                 >
@@ -38,7 +36,7 @@ function RecommendList(props) {
                   />
                 </LazyLoad>
                 <div className="play_count">
-                  <i className="iconfont play"></i>
+                  <i className="iconfont play">&#xe885;</i>
                   <span className="count">{getCount(item.playCount)}</span>
                 </div>
               </div>

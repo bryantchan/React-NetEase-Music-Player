@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import style from "../../assets/global-style";
+import React from 'react';
+import styled from 'styled-components';
+import style from '../../assets/global-style';
 import PropTypes from "prop-types";
 
 const HeaderContainer = styled.div`
@@ -13,38 +13,34 @@ const HeaderContainer = styled.div`
   display: flex;
   line-height: 40px;
   color: ${style["font-color-light"]};
-  .back {
+  .back{
     margin-right: 5px;
     font-size: 20px;
     width: 20px;
   }
-  > h1 {
+  >h1{
     font-size: ${style["font-size-l"]};
     font-weight: 700;
   }
-`;
-
+`
+// 处理函数组件拿不到ref的问题,所以用forwardRef
 const Header = React.forwardRef((props, ref) => {
-  const { handleClick, title, isMarquee } = props;
+  const { handleClick, title, isMarquee} = props;
   return (
     <HeaderContainer ref={ref}>
-      <i className="iconfont back" onClick={handleClick}>
-        &#xe655;
-      </i>
-      {isMarquee ? (
-        <marquee>
-          <h1>{title}</h1>
-        </marquee>
-      ) : (
+      <i className="iconfont back"  onClick={handleClick}>&#xe655;</i>
+      {
+        // eslint-disable-next-line 
+        isMarquee ? <marquee><h1>{title}</h1></marquee>:
         <h1>{title}</h1>
-      )}
+      }
     </HeaderContainer>
-  );
-});
+  )
+})
 
 Header.defaultProps = {
   handleClick: () => {},
-  title: "title",
+  title: "标题",
   isMarquee: false
 };
 

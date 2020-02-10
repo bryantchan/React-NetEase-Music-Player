@@ -4,10 +4,9 @@ import style from "../../assets/global-style";
 export const SongList = styled.div`
   border-radius: 10px;
   opacity: 0.98;
-  // 注意在这里背景改为自配置参数控制
   ${props =>
     props.showBackground
-      ? `background: ${style["highlight-background-color"]}`
+      ? `background: ${style["highlight-background-color"]};`
       : ""}
   .first_line {
     box-sizing: border-box;
