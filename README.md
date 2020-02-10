@@ -27,3 +27,6 @@ $ npm install
 ```
 $ npm run start
 ```
+
+## Screenshot
+![Preview](https://user-images.githubusercontent.com/1303409/74197140-a80d5080-4cc3-11ea-812a-c1a06c9bb00a.png)
